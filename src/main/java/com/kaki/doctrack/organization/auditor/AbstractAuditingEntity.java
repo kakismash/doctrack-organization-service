@@ -1,27 +1,23 @@
-package com.kaki.doctrack.organization.entity;
+package com.kaki.doctrack.organization.auditor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
-import java.util.Calendar;
 
 @MappedSuperclass
-@Audited
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-public class AbstractAuditingEntity implements Serializable {
+public abstract class AbstractAuditingEntity implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @CreatedBy
@@ -32,7 +28,8 @@ public class AbstractAuditingEntity implements Serializable {
     @CreatedDate
     @Column(name = "created_date", nullable = false, updatable = false)
     @JsonIgnore
-    private Long createdDate = Calendar.getInstance().getTime().getTime();
+    private Long createdDate;
+
     @LastModifiedBy
     @Column(name = "last_modified_by", length = 50)
     @JsonIgnore
@@ -41,6 +38,7 @@ public class AbstractAuditingEntity implements Serializable {
     @LastModifiedDate
     @Column(name = "last_modified_date")
     @JsonIgnore
-    private Long lastModifiedDate = Calendar.getInstance().getTime().getTime();
+    private Long lastModifiedDate;
 
+    // Optional: You can add additional methods to handle the timestamps or other auditing logic
 }

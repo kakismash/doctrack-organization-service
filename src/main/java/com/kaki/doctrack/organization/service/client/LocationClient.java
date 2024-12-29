@@ -8,11 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class LocationClient {
 
     @Value("${spring.application.name}")
@@ -34,13 +35,27 @@ public class LocationClient {
 
     private final WebClient webClient;
 
-    public Flux<LocationDto> getLocationsByIds(Set<Long> locationIds) {
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(locationServiceUrl.concat("/batch"))
-                        .queryParam("ids", locationIds)
-                        .build())
-                .header(internalHeader, organizationServiceName)
-                .retrieve()
-                .bodyToFlux(LocationDto.class);
+    public LocationClient(
+            WebClient.Builder webClientBuilder,
+            @Value("${api.internal.apiGatewayPathUrl}") String apiGatewayPathUrl,
+            @Value("${api.internal.locationServicePath}") String locationServiceUrl) {
+        this.webClient = webClientBuilder.baseUrl(apiGatewayPathUrl.concat(locationServiceUrl)).build();
+    }
+
+    public Flux<LocationDto> getLocationsByIds(Mono<Set<Long>> locationIds) {
+        return locationIds
+                .map(ids -> ids.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(",")))
+                .flatMapMany(idsParam ->
+                        webClient.get()
+                                .uri(uriBuilder -> uriBuilder.path("/batch")
+                                        .queryParam("ids", idsParam)
+                                        .build())
+                                .header(internalHeader, organizationServiceName)
+                                .header("X-Internal-Api-Key", apiKey)
+                                .retrieve()
+                                .bodyToFlux(LocationDto.class)
+                );
     }
 }

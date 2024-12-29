@@ -109,6 +109,4 @@ public class OrganizationController {
             return Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).build());
         }
     }
-
-
 }

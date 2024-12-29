@@ -1,12 +1,15 @@
 package com.kaki.doctrack.organization.entity;
 
+import com.kaki.doctrack.organization.auditor.AbstractAuditingEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Getter
@@ -26,21 +29,13 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     private Long id;
 
     private String name;
-
     private String description;
-
     private String phone;
-
     private String address1;
-
     private String address2;
-
     private String city;
-
     private String state;
-
     private String zip;
-
     private String country;
 
     @Column(unique = true)
@@ -50,34 +45,20 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     private String contactName;
 
     private String website;
-
     private String logo;
-
     private String type;
-
     private String status;
 
     @Column(name = "stripe_customer_id", unique = true)
     private String stripeCustomerId;
 
     private String shippingAddress1;
-
     private String shippingAddress2;
-
     private String shippingCity;
-
     private String shippingState;
-
     private String shippingZip;
-
     private String shippingCountry;
-
     private String shippingName;
-
     private String shippingPhone;
 
-    @ElementCollection
-    @CollectionTable(name = "organization_location_ids", joinColumns = @JoinColumn(name = "organization_id"))
-    @Column(name = "location_id")
-    private Set<Long> locationIds;
 }

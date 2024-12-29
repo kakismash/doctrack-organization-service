@@ -2,6 +2,7 @@ package com.kaki.doctrack.organization.dto.organization;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kaki.doctrack.organization.entity.Organization;
+import lombok.SneakyThrows;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
@@ -11,9 +12,20 @@ import java.util.Set;
  * DTO for {@link Organization}
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record CreateOrUpdateOrganizationDto(String name, String description, String phone, String address1, String address2,
-                                            String city, String state, String zip, String country, String email,
-                                            String contactName, String website, String logo, String type,
+public record CreateOrUpdateOrganizationDto(String name,
+                                            String description,
+                                            String phone,
+                                            String address1,
+                                            String address2,
+                                            String city,
+                                            String state,
+                                            String zip,
+                                            String country,
+                                            String email,
+                                            String contactName,
+                                            String website,
+                                            String logo,
+                                            String type,
                                             String status,
                                             String shippingAddress1,
                                             String shippingAddress2,
@@ -22,7 +34,9 @@ public record CreateOrUpdateOrganizationDto(String name, String description, Str
                                             String shippingZip,
                                             String shippingCountry,
                                             String shippingName,
-                                            String shippingPhone, Set<Long> locationIds) implements Serializable {
+                                            String shippingPhone,
+                                            Set<Long> locations) implements Serializable {
+  @SneakyThrows
   public Organization toEntity() {
     Organization organization = new Organization();
 
@@ -118,14 +132,11 @@ public record CreateOrUpdateOrganizationDto(String name, String description, Str
       organization.setShippingPhone(shippingPhone);
     }
 
-    if (locationIds != null) {
-      organization.setLocationIds(locationIds);
-    }
-
     return organization;
   }
 
   // Return true if the organization needs to be updated in Stripe as a Customer
+  @SneakyThrows
   public Boolean onEntity(Organization organizationToUpdate) {
 
     boolean needCustomerUpdate = false;
@@ -237,10 +248,6 @@ public record CreateOrUpdateOrganizationDto(String name, String description, Str
     if (StringUtils.isNotBlank(name) && !name.equals(organizationToUpdate.getName())) {
       needCustomerUpdate = true;
       organizationToUpdate.setName(name);
-    }
-
-    if (shouldUpdateLocations(organizationToUpdate.getLocationIds(), locationIds)) {
-      organizationToUpdate.setLocationIds(locationIds);
     }
 
     return needCustomerUpdate;
