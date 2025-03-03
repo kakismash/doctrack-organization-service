@@ -9,10 +9,10 @@
         <relativePath/>
     </parent>
     <groupId>com.kaki.doctrack</groupId>
-    <artifactId>organization</artifactId>
+    <artifactId>organization-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>organization-service</name>
-    <description>organization</description>
+    <description>organization microservice</description>
     <url/>
     <licenses>
         <license/>
@@ -27,7 +27,6 @@
         <url/>
     </scm>
     <properties>
-        <java.version>23</java.version>
         <spring-cloud.version>2023.0.3</spring-cloud.version>
     </properties>
     <dependencies>
@@ -126,6 +125,7 @@
                         --enable-preview
                         <arg>-parameters</arg>
                     </compilerArgs>
+                    <release>${java.version}</release> <!-- Use 'release' for consistency -->
                 </configuration>
             </plugin>
         </plugins>

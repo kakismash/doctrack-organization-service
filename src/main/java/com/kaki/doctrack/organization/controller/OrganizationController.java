@@ -21,7 +21,6 @@ public class OrganizationController {
 
     private final OrganizationService organizationService;
 
-
     @GetMapping()
     public Mono<ResponseEntity<Page<OrganizationDto>>> getOrganizations(
             @RequestHeader("X-User-Id") Long userId,
